@@ -1,11 +1,11 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::os::unix::process::parent_id;
 
 pub struct Heap<T>
 where
@@ -38,6 +38,18 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        let mut idx = self.len();
+        while idx > 1 {
+            let parent = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[parent]) {
+                self.items.swap(idx, parent);
+                idx = parent;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +70,15 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        if right > self.len() {
+            left
+        } else if (self.comparator)(&self.items[left], &self.items[right]) {
+            left
+        } else {
+            right
+        }
     }
 }
 
@@ -85,7 +105,24 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        let root = self.items.remove(1);
+        self.count -= 1;
+        if !self.is_empty() {
+            let mut idx = 1;
+            while idx > 1 {
+                let smallest = self.smallest_child_idx(idx);
+                if (self.comparator)(&self.items[smallest], &self.items[idx]) {
+                    self.items.swap(smallest, idx)
+                } else {
+                    break;
+                }
+                idx = smallest;
+            }
+        }
+        Some(root)
     }
 }
 
