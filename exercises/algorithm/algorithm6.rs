@@ -3,7 +3,6 @@
     This problem requires you to implement a basic DFS traversal
 */
 
-
 use std::collections::{HashSet, VecDeque};
 
 struct Graph {
@@ -30,7 +29,7 @@ impl Graph {
 
         while let Some(node) = deque.pop() {
             visit_order.push(node);
-            for &neighbor in self.adj[node].iter() {
+            for &neighbor in self.adj[node].iter().rev() {
                 if !visited.contains(&neighbor) {
                     deque.push(neighbor);
                     visited.insert(neighbor);
